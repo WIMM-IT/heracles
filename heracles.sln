@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heracles.Lib", "Heracles.Lib\Heracles.Lib.csproj", "{007DEFF6-7D56-42F6-8CF6-6AE2C99FB839}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heracles.Console", "Heracles.Console\Heracles.Console.csproj", "{3546D15E-57B3-4D6B-9ADC-BC1DA3398908}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{007DEFF6-7D56-42F6-8CF6-6AE2C99FB839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007DEFF6-7D56-42F6-8CF6-6AE2C99FB839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007DEFF6-7D56-42F6-8CF6-6AE2C99FB839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007DEFF6-7D56-42F6-8CF6-6AE2C99FB839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3546D15E-57B3-4D6B-9ADC-BC1DA3398908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3546D15E-57B3-4D6B-9ADC-BC1DA3398908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3546D15E-57B3-4D6B-9ADC-BC1DA3398908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3546D15E-57B3-4D6B-9ADC-BC1DA3398908}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A040C8A2-D199-416E-A96F-D76F228B343A}
+	EndGlobalSection
+EndGlobal
