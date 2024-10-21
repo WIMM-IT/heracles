@@ -1,15 +1,17 @@
-﻿using Csutils;
-using Heracles.Lib;
+﻿using Heracles.Lib;
 
-List<Record>? records = Hydra.Read(3);
-if (records == null )
-{
-	Console.WriteLine("CRIT: Hydra did not return data");
-	Environment.Exit(1);
-}
+const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
+HydraClient client = new(devUri);
 
-foreach (var obj in records)
-{
-	Console.WriteLine(obj.ToPrettyString());
-}
-
+const string testRecord = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
+await client.Get(3, $"in_hostname%3A{testRecord}");
+Thread.Sleep(2000);
+await client.Delete(testRecord);
+Thread.Sleep(2000);
+await client.Get(3, $"in_hostname%3A{testRecord}");
+Console.WriteLine(); // No newline
+Thread.Sleep(2000);
+string testTxt = $"Test TXT {DateTime.Now}";
+await client.Post(testRecord, testTxt);
+Thread.Sleep(2000);
+await client.Get(3, $"in_hostname%3A{testRecord}");
