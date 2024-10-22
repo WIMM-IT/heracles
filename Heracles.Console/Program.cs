@@ -12,12 +12,24 @@ Record newRecord = new Record
 
 HydraClient client = new(devUri);
 
-_ = await client.Get(hostname);
+var matches = await client.Search(hostname);
 Thread.Sleep(2000);
-_ = await client.Delete(hostname);
+var match = matches.First();
+match.Content = $"Test TXT {DateTime.Now}";
+
+match = await client.Put(match);
 Thread.Sleep(2000);
-_ = await client.Get(hostname);
+
+match = await client.Get(match);
 Thread.Sleep(2000);
-_ = await client.Post(newRecord);
+
+_ = await client.Delete(match);
 Thread.Sleep(2000);
-_ = await client.Get(hostname);
+
+_ = await client.Search(hostname);
+Thread.Sleep(2000);
+
+match = await client.Post(newRecord);
+Thread.Sleep(2000);
+
+_ = await client.Get(match);
