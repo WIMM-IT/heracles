@@ -12,12 +12,12 @@ Record newRecord = new Record
 
 HydraClient client = new(devUri);
 
-_ = await client.Get($"in_hostname%3A{hostname}", 3);
+_ = await client.Get(hostname);
 Thread.Sleep(2000);
 _ = await client.Delete(hostname);
 Thread.Sleep(2000);
-_ = await client.Get($"in_hostname%3A{hostname}", 3);
+_ = await client.Get(hostname);
 Thread.Sleep(2000);
 _ = await client.Post(newRecord);
 Thread.Sleep(2000);
-_ = await client.Get($"in_hostname%3A{hostname}", 3);
+_ = await client.Get(hostname);
