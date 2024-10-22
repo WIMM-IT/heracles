@@ -16,9 +16,8 @@ _ = await client.Get($"in_hostname%3A{hostname}", 3);
 Thread.Sleep(2000);
 _ = await client.Delete(hostname);
 Thread.Sleep(2000);
-await client.Get($"in_hostname%3A{hostname}", 3);
-Console.WriteLine(); // No newline
+_ = await client.Get($"in_hostname%3A{hostname}", 3);
 Thread.Sleep(2000);
-await client.Post(newRecord);
+_ = await client.Post(newRecord);
 Thread.Sleep(2000);
 _ = await client.Get($"in_hostname%3A{hostname}", 3);
