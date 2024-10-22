@@ -1,17 +1,24 @@
 ﻿using Heracles.Lib;
 
 const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
+const string hostname = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
+Record newRecord = new Record
+{
+    Hostname = hostname,
+    Type = "TXT",
+    Content = $"Test TXT {DateTime.Now}",
+    Comment = "WinAcme"
+};
+
 HydraClient client = new(devUri);
 
-const string testRecord = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
-await client.Get(3, $"in_hostname%3A{testRecord}");
+_ = await client.Get($"in_hostname%3A{hostname}", 3);
 Thread.Sleep(2000);
-await client.Delete(testRecord);
+_ = await client.Delete(hostname);
 Thread.Sleep(2000);
-await client.Get(3, $"in_hostname%3A{testRecord}");
+await client.Get($"in_hostname%3A{hostname}", 3);
 Console.WriteLine(); // No newline
 Thread.Sleep(2000);
-string testTxt = $"Test TXT {DateTime.Now}";
-await client.Post(testRecord, testTxt);
+await client.Post(newRecord);
 Thread.Sleep(2000);
-await client.Get(3, $"in_hostname%3A{testRecord}");
+_ = await client.Get($"in_hostname%3A{hostname}", 3);
