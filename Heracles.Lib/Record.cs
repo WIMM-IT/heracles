@@ -2,20 +2,26 @@
 
 namespace Heracles.Lib
 {
-	public partial class Record
+    public partial class Record
 	{
 
-		// See https://networks.it.ox.ac.uk/university/ipam/help/record-fields
-		// for full details of record fields.
+        // See https://networks.it.ox.ac.uk/university/ipam/help/record-fields
+        // for full details of record fields.
 
-		[JsonPropertyName("comment")]
-		public required string Comment {  get; set; }
+        [JsonPropertyName("big_endian_labels")]
+        public List<string>? BigEndianLables { get; set; }
+
+        [JsonPropertyName("bind_rdata")]
+        public string? BindRdata { get; set; }
+
+        [JsonPropertyName("comment")]
+		public string? Comment { get; set; }
 
 		[JsonPropertyName("content")]
-		public required string Content { get; set; }
+		public string? Content { get; set; }
 
 		[JsonPropertyName("created_in_transaction")]
-		public required Int64 CreatedInTransaction { get; set; }
+		public Int64? CreatedInTransaction { get; set; }
 
 		[JsonPropertyName("deleted_in_transaction")]
 		public Int64? DeletedInTransaction { get; set; }
@@ -27,10 +33,16 @@ namespace Heracles.Lib
 		public Uri? Href { get; set; }
 
 		[JsonPropertyName("id")]
-		public required Guid Id { get; set; }
+		public Guid? Id { get; set; }
 
-		[JsonPropertyName("is_in_users_view")]
-		public required bool IsInUsersView { get; set; }
+        [JsonPropertyName("in_domains")]
+        public List<string>? InDomains { get; set; }
+
+        [JsonPropertyName("ip")]
+        public string? Ip { get; set; }
+
+        [JsonPropertyName("is_in_users_view")]
+		public bool? IsInUsersView { get; set; }
 
 		[JsonPropertyName("is_locked")]
 		public bool? IsLocked { get; set; }
@@ -39,16 +51,22 @@ namespace Heracles.Lib
 		public Guid? LockId { get; set; }
 
 		[JsonPropertyName("prio_et_al")]
-		public required string PrioEtAl { get; set; }
+		public string? PrioEtAl { get; set; }
 
 		[JsonPropertyName("table_name")]
-		public required string TableName { get; set; }
+		public string? TableName { get; set; }
 
-		[JsonPropertyName("target")]
-		public string? Target { get; set; }
+        [JsonPropertyName("target")]
+        public string? Target { get; set; }
 
-		[JsonPropertyName("type")]
+        [JsonPropertyName("ttl")]
+        public uint? Ttl { get; set; }
+
+        [JsonPropertyName("type")]
 		public required string Type { get; set; }
 
-	}
+        [JsonPropertyName("zone_name")]
+        public string? ZoneName { get; set; }
+
+    }
 }
