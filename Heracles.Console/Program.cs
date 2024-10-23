@@ -1,4 +1,6 @@
 ﻿using Heracles.Lib;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
 const string hostname = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
@@ -9,27 +11,62 @@ Record newRecord = new Record
     Content = $"Test TXT {DateTime.Now}",
     Comment = "WinAcme"
 };
+JsonSerializerOptions options = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+};
 
 HydraClient client = new(devUri);
+List<Record>? entries;
+Record? entry;
 
-var matches = await client.Search(hostname);
-Thread.Sleep(2000);
-var match = matches.First();
-match.Content = $"Test TXT {DateTime.Now}";
-
-match = await client.Update(match);
-Thread.Sleep(2000);
-
-match = await client.Get(match);
-Thread.Sleep(2000);
-
-_ = await client.Delete(match);
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine($"SEARCH {hostname}");
+Console.ResetColor();
+entries = await client.Search(hostname);
+entry = entries.First();
+Console.WriteLine(JsonSerializer.Serialize(entries, options));
 Thread.Sleep(2000);
 
-_ = await client.Search(hostname);
+entry.Content = $"Test TXT {DateTime.Now}";
+Console.ForegroundColor = ConsoleColor.Yellow;
+Console.WriteLine($"UPDATE {entry.Id}");
+Console.ResetColor();
+entry = await client.Update(entry);
+Console.WriteLine(JsonSerializer.Serialize(entry, options));
 Thread.Sleep(2000);
 
-match = await client.Add(newRecord);
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine($"GET {entry.Id}");
+Console.ResetColor();
+entry = await client.Get(entry);
+Console.WriteLine(JsonSerializer.Serialize(entry, options));
 Thread.Sleep(2000);
 
-_ = await client.Get(match);
+Console.ForegroundColor = ConsoleColor.Red;
+Console.WriteLine($"DELETE {entry.Id}");
+Console.ResetColor();
+entry = await client.Delete(entry);
+Console.WriteLine(JsonSerializer.Serialize(entry, options));
+Thread.Sleep(2000);
+
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine($"SEARCH {hostname}");
+Console.ResetColor();
+entries = await client.Search(hostname);
+Console.WriteLine(JsonSerializer.Serialize(entries, options));
+Thread.Sleep(2000);
+
+Console.ForegroundColor = ConsoleColor.Yellow;
+Console.WriteLine($"ADD {newRecord}");
+Console.ResetColor();
+entry = await client.Add(newRecord);
+Console.WriteLine(JsonSerializer.Serialize(entry, options));
+Thread.Sleep(2000);
+
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine($"GET {entry.Id}");
+Console.ResetColor();
+entry = await client.Get(entry);
+Console.WriteLine(JsonSerializer.Serialize(entry, options));

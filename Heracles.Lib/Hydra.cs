@@ -41,22 +41,15 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<List<Record>> Search(string substring = "", int limit = 500000)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"-> SEARCH {substring} LIMIT {limit}");
             var response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
-            Console.WriteLine($"<- {response.StatusCode}");
-            Console.ResetColor();
-
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new HttpRequestException("Unexpected response from server");
             }
-
             var content = await response.Content.ReadAsStringAsync();
             var records = JsonSerializer.Deserialize<List<Record>>(content);
             ArgumentNullException.ThrowIfNull(records);
 
-            Console.WriteLine(JsonSerializer.Serialize(records, options));
             return records;
         }
 
@@ -73,23 +66,16 @@ namespace Heracles.Lib
             ArgumentNullException.ThrowIfNull(theRecord);
             ArgumentNullException.ThrowIfNull(theRecord.Id);
             
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"-> DELETE {theRecord.Id}");
             var response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
-            Console.WriteLine($"<- {response.StatusCode}");
-            Console.ResetColor();
-
-            var content = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 Console.WriteLine(response);
                 throw new HttpRequestException("Unexpected response from server");
             }
-
+            var content = await response.Content.ReadAsStringAsync();
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
-            Console.WriteLine(JsonSerializer.Serialize(record, options));
             return record;
         }
 
@@ -107,22 +93,15 @@ namespace Heracles.Lib
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"-> ADD {json}");
             var response = await httpClient.PostAsync("records", jsonContent);
-            Console.WriteLine($"<- {response.StatusCode}");
-            Console.ResetColor();
-
             if (response.StatusCode != System.Net.HttpStatusCode.Accepted)
             {
                 throw new HttpRequestException("Unexpected response from server");
             }
-
             var content = await response.Content.ReadAsStringAsync();
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
-            Console.WriteLine(JsonSerializer.Serialize(record, options));
             return record;
         }
 
@@ -141,22 +120,15 @@ namespace Heracles.Lib
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"-> UPDATE {theRecord.Id}");
             var response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
-            Console.WriteLine($"<- {response.StatusCode}");
-            Console.ResetColor();
-
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new HttpRequestException("Unexpected response from server");
             }
-
             var content = await response.Content.ReadAsStringAsync();
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
-            Console.WriteLine(JsonSerializer.Serialize(record, options));
             return record;
         }
 
@@ -173,22 +145,15 @@ namespace Heracles.Lib
             ArgumentNullException.ThrowIfNull(theRecord);
             ArgumentNullException.ThrowIfNull(theRecord.Id);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"-> Get {theRecord.Id}");
             var response = await httpClient.GetAsync($"records/{theRecord.Id}");
-            Console.WriteLine($"<- {response.StatusCode}");
-            Console.ResetColor();
-
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new HttpRequestException("Unexpected response from server");
             }
-
             var content = await response.Content.ReadAsStringAsync();
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
-            Console.WriteLine(JsonSerializer.Serialize(record, options));
             return record;
         }
     }
