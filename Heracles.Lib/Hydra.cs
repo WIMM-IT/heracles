@@ -7,9 +7,9 @@ namespace Heracles.Lib
     public class HydraClient
     {
 
-        private HttpClient httpClient;
-        private string? apiToken;
-        private JsonSerializerOptions options = new JsonSerializerOptions
+        private readonly HttpClient httpClient = new();
+        private readonly string? apiToken;
+        private readonly JsonSerializerOptions options = new()
         {
             WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -23,8 +23,6 @@ namespace Heracles.Lib
         {
             apiToken = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
             ArgumentNullException.ThrowIfNull(apiToken);
-
-            httpClient = new();
             httpClient.BaseAddress = new Uri(uri);
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {apiToken}");
         }

@@ -4,14 +4,14 @@ using System.Text.Json.Serialization;
 
 const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
 const string hostname = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
-Record newRecord = new Record
+Record newRecord = new()
 {
     Hostname = hostname,
     Type = "TXT",
     Content = $"Test TXT {DateTime.Now}",
     Comment = "WinAcme"
 };
-JsonSerializerOptions options = new JsonSerializerOptions
+JsonSerializerOptions options = new()
 {
     WriteIndented = true,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
