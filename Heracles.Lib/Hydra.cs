@@ -19,6 +19,8 @@ namespace Heracles.Lib
         /// Create a new Hydra client using the API endpoint defined by "uri".
         /// </summary>
         /// <param name="uri"></param>
+        /// <returns>A new Hydra client.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public HydraClient(string uri)
         {
             apiToken = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
