@@ -29,6 +29,22 @@ namespace Heracles.Lib
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {apiToken}");
         }
 
+        private async Task<string> GetContent(HttpResponseMessage response)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return content;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("CRIT: Unexpected response from server");
+            Console.ResetColor();
+            Console.WriteLine(response.StatusCode);
+            Console.WriteLine(content);
+            throw new HttpRequestException();
+        }
+
         /// <summary>
         /// Searches Hydra for records where the hostname contains a given substring.
         /// By default, returns unlimited matching records (up to the 500000 limit imposed by the API).
@@ -41,12 +57,8 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<List<Record>> Search(string substring = "", int limit = 500000)
         {
-            var response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new HttpRequestException("Unexpected response from server");
-            }
-            var content = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
+            string content = await GetContent(response);
             var records = JsonSerializer.Deserialize<List<Record>>(content);
             ArgumentNullException.ThrowIfNull(records);
 
@@ -63,16 +75,10 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Delete(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(theRecord);
             ArgumentNullException.ThrowIfNull(theRecord.Id);
-            
-            var response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                Console.WriteLine(response);
-                throw new HttpRequestException("Unexpected response from server");
-            }
-            var content = await response.Content.ReadAsStringAsync();
+
+            HttpResponseMessage response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
+            string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
@@ -89,16 +95,11 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Add(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(theRecord);
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync("records", jsonContent);
-            if (response.StatusCode != System.Net.HttpStatusCode.Accepted)
-            {
-                throw new HttpRequestException("Unexpected response from server");
-            }
-            var content = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await httpClient.PostAsync("records", jsonContent);
+            string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
@@ -115,17 +116,12 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Update(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(theRecord);
             ArgumentNullException.ThrowIfNull(theRecord.Id);
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new HttpRequestException("Unexpected response from server");
-            }
-            var content = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
+            string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
@@ -142,15 +138,10 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Get(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(theRecord);
             ArgumentNullException.ThrowIfNull(theRecord.Id);
 
-            var response = await httpClient.GetAsync($"records/{theRecord.Id}");
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new HttpRequestException("Unexpected response from server");
-            }
-            var content = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await httpClient.GetAsync($"records/{theRecord.Id}");
+            string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
 
