@@ -29,6 +29,12 @@ namespace Heracles.Lib
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {apiToken}");
         }
 
+        /// <summary>
+        /// Validates that the Hydra API reponse does not indicate an error.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns>The content of the response.</returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<string> GetContent(HttpResponseMessage response)
         {
             string content = await response.Content.ReadAsStringAsync();
@@ -61,7 +67,7 @@ namespace Heracles.Lib
             string content = await GetContent(response);
             var records = JsonSerializer.Deserialize<List<Record>>(content);
             ArgumentNullException.ThrowIfNull(records);
-
+            
             return records;
         }
 
@@ -81,7 +87,7 @@ namespace Heracles.Lib
             string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
-
+            
             return record;
         }
 
@@ -102,7 +108,7 @@ namespace Heracles.Lib
             string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
-
+            
             return record;
         }
 
@@ -124,7 +130,7 @@ namespace Heracles.Lib
             string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
-
+            
             return record;
         }
 
@@ -144,7 +150,7 @@ namespace Heracles.Lib
             string content = await GetContent(response);
             var record = JsonSerializer.Deserialize<Record>(content);
             ArgumentNullException.ThrowIfNull(record);
-
+            
             return record;
         }
     }
