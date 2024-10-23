@@ -30,12 +30,12 @@ namespace Heracles.Lib
         }
 
         /// <summary>
-        /// Validates that the Hydra API reponse does not indicate an error.
+        /// Parses the Hydra API reponse, checking that it does not indicate an error.
         /// </summary>
         /// <param name="response"></param>
         /// <returns>The content of the response.</returns>
         /// <exception cref="HttpRequestException"></exception>
-        private async Task<string> GetContent(HttpResponseMessage response)
+        private static async Task<string> ParseResponse(HttpResponseMessage response)
         {
             string content = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
@@ -52,6 +52,33 @@ namespace Heracles.Lib
         }
 
         /// <summary>
+        /// Parses the returned Hydra API content into an instance of a type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="JsonException"></exception>
+        private static T ParseContent<T>(string content)
+        {
+            T? results;
+            try
+            {
+                results = JsonSerializer.Deserialize<T>(content);
+                ArgumentNullException.ThrowIfNull(results);
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"CRIT: Could not parse server response into {typeof(T)}");
+                Console.ResetColor();
+                Console.WriteLine(content);
+                throw;
+            }
+            return results;
+        }
+
+        /// <summary>
         /// Searches Hydra for records where the hostname contains a given substring.
         /// By default, returns unlimited matching records (up to the 500000 limit imposed by the API).
         /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
@@ -59,16 +86,11 @@ namespace Heracles.Lib
         /// <param name="substring"></param>
         /// <param name="limit"></param>
         /// <returns>A list of matching records.</returns>
-        /// <exception cref="HttpRequestException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
         public async Task<List<Record>> Search(string substring = "", int limit = 500000)
         {
             HttpResponseMessage response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
-            string content = await GetContent(response);
-            var records = JsonSerializer.Deserialize<List<Record>>(content);
-            ArgumentNullException.ThrowIfNull(records);
-            
-            return records;
+            string content = await ParseResponse(response);
+            return ParseContent<List<Record>>(content);
         }
 
         /// <summary>
@@ -77,18 +99,13 @@ namespace Heracles.Lib
         /// </summary>
         /// <param name="guid"></param>
         /// <returns>A copy of the deleted record.</returns>
-        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Delete(Record theRecord)
         {
             ArgumentNullException.ThrowIfNull(theRecord.Id);
-
             HttpResponseMessage response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
-            string content = await GetContent(response);
-            var record = JsonSerializer.Deserialize<Record>(content);
-            ArgumentNullException.ThrowIfNull(record);
-            
-            return record;
+            string content = await ParseResponse(response);
+            return ParseContent<Record>(content);
         }
 
         /// <summary>
@@ -97,19 +114,13 @@ namespace Heracles.Lib
         /// </summary>
         /// <param name="theRecord"></param>
         /// <returns>A copy of the newly added record.</returns>
-        /// <exception cref="HttpRequestException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Add(Record theRecord)
         {
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-
             HttpResponseMessage response = await httpClient.PostAsync("records", jsonContent);
-            string content = await GetContent(response);
-            var record = JsonSerializer.Deserialize<Record>(content);
-            ArgumentNullException.ThrowIfNull(record);
-            
-            return record;
+            string content = await ParseResponse(response);
+            return ParseContent<Record>(content);
         }
 
         /// <summary>
@@ -118,20 +129,15 @@ namespace Heracles.Lib
         /// </summary>
         /// <param name="theRecord"></param>
         /// <returns>A copy of the newly updated record.</returns>
-        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Update(Record theRecord)
         {
             ArgumentNullException.ThrowIfNull(theRecord.Id);
             var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-
             HttpResponseMessage response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
-            string content = await GetContent(response);
-            var record = JsonSerializer.Deserialize<Record>(content);
-            ArgumentNullException.ThrowIfNull(record);
-            
-            return record;
+            string content = await ParseResponse(response);
+            return ParseContent<Record>(content);
         }
 
         /// <summary>
@@ -140,18 +146,13 @@ namespace Heracles.Lib
         /// </summary>
         /// <param name="theRecord"></param>
         /// <returns>A copy of the record.</returns>
-        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<Record> Get(Record theRecord)
         {
             ArgumentNullException.ThrowIfNull(theRecord.Id);
-
             HttpResponseMessage response = await httpClient.GetAsync($"records/{theRecord.Id}");
-            string content = await GetContent(response);
-            var record = JsonSerializer.Deserialize<Record>(content);
-            ArgumentNullException.ThrowIfNull(record);
-            
-            return record;
+            string content = await ParseResponse(response);
+            return ParseContent<Record>(content);
         }
     }
 }
