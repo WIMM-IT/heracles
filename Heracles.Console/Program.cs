@@ -17,7 +17,7 @@ Thread.Sleep(2000);
 var match = matches.First();
 match.Content = $"Test TXT {DateTime.Now}";
 
-match = await client.Put(match);
+match = await client.Update(match);
 Thread.Sleep(2000);
 
 match = await client.Get(match);
@@ -29,7 +29,7 @@ Thread.Sleep(2000);
 _ = await client.Search(hostname);
 Thread.Sleep(2000);
 
-match = await client.Post(newRecord);
+match = await client.Add(newRecord);
 Thread.Sleep(2000);
 
 _ = await client.Get(match);

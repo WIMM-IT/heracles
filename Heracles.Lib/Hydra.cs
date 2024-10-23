@@ -30,7 +30,7 @@ namespace Heracles.Lib
         }
 
         /// <summary>
-        /// Queries Hydra for records where the hostname contains a given substring.
+        /// Searches Hydra for records where the hostname contains a given substring.
         /// By default, returns unlimited matching records (up to the 500000 limit imposed by the API).
         /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
         /// </summary>
@@ -42,7 +42,7 @@ namespace Heracles.Lib
         public async Task<List<Record>> Search(string substring = "", int limit = 500000)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"-> SEARCH records?q=in_hostname%3A{substring}&limit={limit}");
+            Console.WriteLine($"-> SEARCH {substring} LIMIT {limit}");
             var response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
             Console.WriteLine($"<- {response.StatusCode}");
             Console.ResetColor();
@@ -68,14 +68,14 @@ namespace Heracles.Lib
         /// <returns>A copy of the deleted record.</returns>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<Record> Delete(Record toDelete)
+        public async Task<Record> Delete(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(toDelete);
-            ArgumentNullException.ThrowIfNull(toDelete.Id);
+            ArgumentNullException.ThrowIfNull(theRecord);
+            ArgumentNullException.ThrowIfNull(theRecord.Id);
             
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"-> DELETE records/{toDelete.Id}");
-            var response = await httpClient.DeleteAsync($"records/{toDelete.Id}");
+            Console.WriteLine($"-> DELETE {theRecord.Id}");
+            var response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
             Console.WriteLine($"<- {response.StatusCode}");
             Console.ResetColor();
 
@@ -97,18 +97,18 @@ namespace Heracles.Lib
         /// Adds a new record to Hydra.
         /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
         /// </summary>
-        /// <param name="newRecord"></param>
+        /// <param name="theRecord"></param>
         /// <returns>A copy of the newly added record.</returns>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<Record> Post(Record newRecord)
+        public async Task<Record> Add(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(newRecord);
-            var json = JsonSerializer.Serialize(newRecord, options);
+            ArgumentNullException.ThrowIfNull(theRecord);
+            var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"-> POST {json}");
+            Console.WriteLine($"-> ADD {json}");
             var response = await httpClient.PostAsync("records", jsonContent);
             Console.WriteLine($"<- {response.StatusCode}");
             Console.ResetColor();
@@ -130,20 +130,20 @@ namespace Heracles.Lib
         /// Updates a record in Hydra.
         /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
         /// </summary>
-        /// <param name="newRecord"></param>
+        /// <param name="theRecord"></param>
         /// <returns>A copy of the newly updated record.</returns>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<Record> Put(Record newRecord)
+        public async Task<Record> Update(Record theRecord)
         {
-            ArgumentNullException.ThrowIfNull(newRecord);
-            ArgumentNullException.ThrowIfNull(newRecord.Id);
-            var json = JsonSerializer.Serialize(newRecord, options);
+            ArgumentNullException.ThrowIfNull(theRecord);
+            ArgumentNullException.ThrowIfNull(theRecord.Id);
+            var json = JsonSerializer.Serialize(theRecord, options);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"-> PUT {json}");
-            var response = await httpClient.PutAsync($"records/{newRecord.Id}", jsonContent);
+            Console.WriteLine($"-> UPDATE {theRecord.Id}");
+            var response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
             Console.WriteLine($"<- {response.StatusCode}");
             Console.ResetColor();
 
@@ -161,7 +161,7 @@ namespace Heracles.Lib
         }
 
         /// <summary>
-        /// Gets a record in Hydra by GUID.
+        /// Gets a record in Hydra.
         /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
         /// </summary>
         /// <param name="theRecord"></param>
