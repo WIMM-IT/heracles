@@ -2,6 +2,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+string? credentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
+ArgumentNullException.ThrowIfNull(credentials);
 const int pause = 500;
 const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
 const string hostname = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
@@ -18,7 +20,7 @@ JsonSerializerOptions options = new()
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 };
 
-HydraClient client = new(devUri);
+HydraClient client = new(devUri, credentials);
 List<Record>? entries;
 Record? entry;
 

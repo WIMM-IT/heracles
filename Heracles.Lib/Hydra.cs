@@ -8,7 +8,6 @@ namespace Heracles.Lib
     {
 
         private readonly HttpClient httpClient = new();
-        private readonly string? apiToken;
         private readonly JsonSerializerOptions options = new()
         {
             WriteIndented = true,
@@ -17,15 +16,14 @@ namespace Heracles.Lib
 
         /// <summary>
         /// Create a new Hydra client using the API endpoint defined by "uri".
+        /// Basic auth credentials should be passed in the format "user:password".
         /// </summary>
         /// <param name="uri"></param>
-        /// <returns>A new Hydra client.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public HydraClient(string uri)
+        /// <param name="credentials"></param>
+        /// <returns>An initialized Hydra client.</returns>
+        public HydraClient(string uri, string credentials)
         {
-            string? apiCredentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
-            ArgumentNullException.ThrowIfNull(apiCredentials);
-            byte[] plainTextBytes = Encoding.UTF8.GetBytes(apiCredentials);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(credentials);
             string apiToken = Convert.ToBase64String(plainTextBytes);
             httpClient.BaseAddress = new Uri(uri);
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {apiToken}");
