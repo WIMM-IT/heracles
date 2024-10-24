@@ -23,8 +23,10 @@ namespace Heracles.Lib
         /// <exception cref="ArgumentNullException"></exception>
         public HydraClient(string uri)
         {
-            apiToken = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
-            ArgumentNullException.ThrowIfNull(apiToken);
+            string? apiCredentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
+            ArgumentNullException.ThrowIfNull(apiCredentials);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(apiCredentials);
+            string apiToken = Convert.ToBase64String(plainTextBytes);
             httpClient.BaseAddress = new Uri(uri);
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {apiToken}");
         }
