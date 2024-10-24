@@ -21,6 +21,16 @@ namespace Heracles.UnitTests
         }
 
         [Fact]
+        public async void DeleteWithNonExistantRecordThrowsHttpRequestException()
+        {
+            //Act
+            Task result() => Fixture.ValidHydraClient.Delete(Fixture.DummyRecord);
+
+            //Assert
+            await Assert.ThrowsAsync<HttpRequestException>(result);
+        }
+
+        [Fact]
         public async void DeleteWithValidRecordNoIdThrowsArgumentNullException()
         {
             //Act

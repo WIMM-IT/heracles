@@ -22,6 +22,16 @@ namespace Heracles.UnitTests
         }
 
         [Fact]
+        public async void GetWithNonExistantRecordThrowsHttpRequestException()
+        {
+            //Act
+            Task result() => Fixture.ValidHydraClient.Get(Fixture.DummyRecord);
+
+            //Assert
+            await Assert.ThrowsAsync<HttpRequestException>(result);
+        }
+
+        [Fact]
         public async void GetWithValidRecordNoIdThrowsArgumentNullException()
         {
             //Act
