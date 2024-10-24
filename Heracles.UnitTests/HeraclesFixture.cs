@@ -5,11 +5,23 @@ namespace Heracles.UnitTests
     public class HeraclesFixture
     {
 
+        private const string uri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
         private readonly string? credentials;
         public HydraClient ValidHydraClient { get; }
         public HydraClient InvalidHydraClient { get; }
-
-        private const string uri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
+        public Heracles.Lib.Record DummyRecord = new()
+        {
+            Hostname = "notarealhostname",
+            Content = "test",
+            Type = "TXT",
+            Id = Guid.NewGuid()
+        };
+        public Heracles.Lib.Record DummyRecordNoId = new()
+        {
+            Hostname = "notarealhostname",
+            Content = "test",
+            Type = "TXT"
+        };
 
         public HeraclesFixture()
         {
