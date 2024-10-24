@@ -81,13 +81,20 @@ namespace Heracles.Lib
         /// <summary>
         /// Searches Hydra for records where the hostname contains a given substring.
         /// By default, returns unlimited matching records (up to the 500000 limit imposed by the API).
-        /// Throws an exception if an unexpected response is recieved from the API or the deserialized JSON is null.
+        /// To limit the number of records returned, set "limit" to a value from 1-500000.
+        /// Throws an exception if the limit out of range, an unexpected response is recieved from the
+        /// API or the deserialized JSON is null.
         /// </summary>
         /// <param name="substring"></param>
         /// <param name="limit"></param>
         /// <returns>A list of matching records.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public async Task<List<Record>> Search(string substring = "", int limit = 500000)
         {
+            if (limit < 1 || limit > 500000)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
             HttpResponseMessage response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
             string content = await ParseResponse(response);
             return ParseContent<List<Record>>(content);
