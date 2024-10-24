@@ -18,7 +18,7 @@ namespace Heracles.Lib
 		public string? Comment { get; set; }
 
 		[JsonPropertyName("content")]
-		public string? Content { get; set; }
+		public required string Content { get; set; }
 
 		[JsonPropertyName("created_in_transaction")]
 		public Int64? CreatedInTransaction { get; set; }
