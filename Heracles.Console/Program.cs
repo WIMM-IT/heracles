@@ -1,75 +1,63 @@
-﻿using Heracles.Lib;
+﻿using Heracles.Console;
+using Heracles.Lib;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-string? credentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
-ArgumentNullException.ThrowIfNull(credentials);
-const int pause = 500;
-const string devUri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
-const string hostname = "_acme-challenge.imm-dmtmac.imm.ox.ac.uk.";
-Record newRecord = new()
-{
-    Hostname = hostname,
-    Type = "TXT",
-    Content = $"Test TXT {DateTime.Now}",
-    Comment = "WinAcme"
-};
+// Globals
+string? Uri;
+string? Credentials;
+string? Input;
+ProgramMode Mode;
+HydraClient Client;
 JsonSerializerOptions options = new()
 {
     WriteIndented = true,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 };
 
-HydraClient client = new(devUri, credentials);
-List<Record>? entries;
-Record? entry;
+// Configure args
+Mode = (args.Length > 0) switch
+{
+    false => ProgramMode.Unknown,
+    true => args[0] switch
+    {
+        "search" => ProgramMode.Search,
+        "get" => ProgramMode.Get,
+        "add" => ProgramMode.Add,
+        "update" => ProgramMode.Update,
+        "delete" => ProgramMode.Delete,
+        _ => ProgramMode.Unknown
+    }
+};
 
-Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine($"SEARCH {hostname}");
-Console.ResetColor();
-entries = await client.Search(hostname);
-entry = entries.First();
-Console.WriteLine(JsonSerializer.Serialize(entries, options));
-Thread.Sleep(pause);
+Input = (System.Console.IsInputRedirected, args.Length == 2) switch
+{
+    (true, false) => System.Console.In.ReadToEnd(),
+    (false, true) => args[1],
+    _ => null
+};
 
-entry.Content = $"Test TXT {DateTime.Now}";
-Console.ForegroundColor = ConsoleColor.Yellow;
-Console.WriteLine($"UPDATE {entry.Id}");
-Console.ResetColor();
-entry = await client.Update(entry);
-Console.WriteLine(JsonSerializer.Serialize(entry, options));
-Thread.Sleep(pause);
+if (Input is null || Mode == ProgramMode.Unknown)
+{
+    Program.Usage();
+}
 
-Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine($"GET {entry.Id}");
-Console.ResetColor();
-entry = await client.Get(entry);
-Console.WriteLine(JsonSerializer.Serialize(entry, options));
-Thread.Sleep(pause);
+// Init
+Uri = Environment.GetEnvironmentVariable("HYDRA_URI");
+Credentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
+ArgumentNullException.ThrowIfNull(Uri);
+ArgumentNullException.ThrowIfNull(Credentials);
+Client = new(Uri, Credentials);
 
-Console.ForegroundColor = ConsoleColor.Red;
-Console.WriteLine($"DELETE {entry.Id}");
-Console.ResetColor();
-entry = await client.Delete(entry);
-Console.WriteLine(JsonSerializer.Serialize(entry, options));
-Thread.Sleep(pause);
+// Run
+List<Record> r = Mode switch
+{
+    ProgramMode.Search => await Client.Search(Input!),
+    ProgramMode.Get    => [await Client.Get(JsonToRecord(Input!)!)],
+    ProgramMode.Add    => [await Client.Add(JsonToRecord(Input!)!)],
+    ProgramMode.Update => [await Client.Update(JsonToRecord(Input!)!)],
+    ProgramMode.Delete => [await Client.Delete(JsonToRecord(Input!)!)],
+    _ => new List<Record> { } // Should never get here
+};
 
-Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine($"SEARCH {hostname}");
-Console.ResetColor();
-entries = await client.Search(hostname);
-Console.WriteLine(JsonSerializer.Serialize(entries, options));
-Thread.Sleep(pause);
-
-Console.ForegroundColor = ConsoleColor.Yellow;
-Console.WriteLine($"ADD {newRecord}");
-Console.ResetColor();
-entry = await client.Add(newRecord);
-Console.WriteLine(JsonSerializer.Serialize(entry, options));
-Thread.Sleep(pause);
-
-Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine($"GET {entry.Id}");
-Console.ResetColor();
-entry = await client.Get(entry);
-Console.WriteLine(JsonSerializer.Serialize(entry, options));
+Console.WriteLine(JsonSerializer.Serialize<List<Record>>(r, options));
