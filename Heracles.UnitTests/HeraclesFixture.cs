@@ -5,7 +5,7 @@ namespace Heracles.UnitTests
     public class HeraclesFixture
     {
 
-        private const string uri = "https://devon.netdev.it.ox.ac.uk/api/ipam/";
+        private readonly string? uri;
         private readonly string? credentials;
         public HydraClient ValidHydraClient { get; }
         public HydraClient InvalidHydraClient { get; }
@@ -27,6 +27,8 @@ namespace Heracles.UnitTests
         {
             credentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
             ArgumentNullException.ThrowIfNull(credentials);
+            uri = Environment.GetEnvironmentVariable("HYDRA_URI");
+            ArgumentNullException.ThrowIfNull(uri);
             ValidHydraClient = new(uri, credentials);
             InvalidHydraClient = new(uri, "notvalidcredentials");
         }
