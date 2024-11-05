@@ -5,8 +5,21 @@ partial class Program()
 {
 	public static void Usage()
 	{
-		System.Console.WriteLine("USAGE: heracles [search|get|add|update|delete] [record]");
-		Environment.Exit(1);
+        string usage = """
+            USAGE: heracles search string
+                            get    [json]
+                            add    [json]
+                            update [json]
+                            delete [json]
+
+            All commands output a JSON encoded list of the found or affected records.
+
+            [json] must be either provided on the command line as a single "" protected
+            string, or piped into STDIN, but not both.
+            """;
+        Console.WriteLine(usage);
+
+        Environment.Exit(1);
 	}
 
 	public static List<Record>? JsonToRecords(string s)
