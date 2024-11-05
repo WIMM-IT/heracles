@@ -53,10 +53,10 @@ Client = new(Uri, Credentials);
 List<Record> r = Mode switch
 {
     ProgramMode.Search => await Client.Search(Input!),
-    ProgramMode.Get    => [await Client.Get(JsonToRecord(Input!)!)],
-    ProgramMode.Add    => [await Client.Add(JsonToRecord(Input!)!)],
-    ProgramMode.Update => [await Client.Update(JsonToRecord(Input!)!)],
-    ProgramMode.Delete => [await Client.Delete(JsonToRecord(Input!)!)],
+    ProgramMode.Get    => await LoopJsonRecords(Input!, Client.Get),
+    ProgramMode.Add    => await LoopJsonRecords(Input!, Client.Add),
+    ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update),
+    ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete),
     _ => new List<Record> { } // Should never get here
 };
 

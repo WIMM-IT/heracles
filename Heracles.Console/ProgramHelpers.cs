@@ -9,12 +9,12 @@ partial class Program()
 		Environment.Exit(1);
 	}
 
-	public static Record? JsonToRecord(string s)
+	public static List<Record>? JsonToRecords(string s)
 	{
-        Record? r = null;
+        List<Record>? r = null;
         try
         {
-            r = JsonSerializer.Deserialize<List<Record>>(s)?.FirstOrDefault();
+            r = JsonSerializer.Deserialize<List<Record>>(s);
         }
         catch (Exception ex)
         {
@@ -23,5 +23,15 @@ partial class Program()
             Usage();
         }
         return r;
+    }
+
+    public static async Task<List<Record>> LoopJsonRecords(string s, Func<Record, Task<Record>> f)
+    {
+        List<Record> rs = [];
+        foreach (Record r in JsonToRecords(s)!)
+        {
+            rs.Add(await f(r));
+        }
+        return rs;
     }
 }
