@@ -53,7 +53,7 @@ $ heracles search _acme
 
 ## Example 2 - Getting matching records
 
-Takes a JSON list containing one or more entries to be added, either on STDIN or as the second argument. `content`, `hostname`, `type` and `id` are required fields. Returns a JSON list of the entries. Primarily useful for safely testing command pipes.
+Takes a JSON list containing one or more entries to be added, either on STDIN or as the second argument. `id`, `content`, `hostname` and `type` are required fields. Returns a JSON list of the entries. Primarily useful for safely testing command pipes.
 
 ```
 $ heracles search _acme-challenge.web | heracles get
