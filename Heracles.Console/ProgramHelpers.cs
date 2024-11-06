@@ -43,9 +43,16 @@ partial class Program()
     public static async Task<List<Record>> LoopJsonRecords(string s, Func<Record, Task<Record>> f)
     {
         List<Record> rs = [];
-        foreach (Record r in RecordHelpers.JsonToRecordList(s)!)
+        try
         {
-            rs.Add(await f(r));
+            foreach (Record r in RecordHelpers.JsonToRecordList(s)!)
+            {
+                rs.Add(await f(r));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{ex.Message}\n...aborting");
         }
         return rs;
     }
