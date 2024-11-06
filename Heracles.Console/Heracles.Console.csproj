@@ -5,7 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<PublishSingleFile>true</PublishSingleFile>
+	<PublishAot>true</PublishAot>
 	<AssemblyName>heracles</AssemblyName>
   </PropertyGroup>
 

@@ -2,7 +2,7 @@
 
 namespace Heracles.Lib
 {
-    public partial class Record
+    public class Record
 	{
 
         // See https://networks.it.ox.ac.uk/university/ipam/help/record-fields
@@ -69,4 +69,12 @@ namespace Heracles.Lib
         public string? ZoneName { get; set; }
 
     }
+
+    [JsonSourceGenerationOptions(WriteIndented = true)]
+    [JsonSerializable(typeof(Record))]
+    [JsonSerializable(typeof(List<Record>))]
+    public partial class SourceGenerationContext : JsonSerializerContext
+    {
+    }
+
 }

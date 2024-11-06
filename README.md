@@ -15,10 +15,10 @@
 ```
 $ cd heracles
 $ cd Heracles.Console
-$ dotnet publish --sc true
+$ dotnet publish
 ```
 
-This will create a portable executable, with the DotNet runtime pre-bundled, in the folder `\bin\Release\net8.0\{os}-{arch}\publish\`.
+This will create a portable executable for the OS and architecture the code was compiled on, in the folder `\bin\Release\net8.0\{os}-{arch}\publish\`. The `.pdb` debugging files can be ignored.
 
 # Requirements
 

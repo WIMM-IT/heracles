@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Heracles.Lib
 {
@@ -8,12 +6,7 @@ namespace Heracles.Lib
     {
 
         private readonly HttpClient httpClient = new();
-        private readonly JsonSerializerOptions options = new()
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-
+        
         /// <summary>
         /// Create a new Hydra client using the API endpoint defined by "uri".
         /// Basic auth credentials should be passed in the format "user:password".
@@ -52,33 +45,6 @@ namespace Heracles.Lib
         }
 
         /// <summary>
-        /// Parses the returned Hydra API content into an instance of a type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="JsonException"></exception>
-        private static T ParseContent<T>(string content)
-        {
-            T? results;
-            try
-            {
-                results = JsonSerializer.Deserialize<T>(content);
-                ArgumentNullException.ThrowIfNull(results);
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"CRIT: Could not parse server response into {typeof(T)}");
-                Console.ResetColor();
-                Console.WriteLine(content);
-                throw;
-            }
-            return results;
-        }
-
-        /// <summary>
         /// Searches Hydra for records where the hostname contains a given substring.
         /// By default, returns unlimited matching records (up to the 500000 limit imposed by the API).
         /// To limit the number of records returned, set "limit" to a value from 1-500000.
@@ -97,7 +63,7 @@ namespace Heracles.Lib
             }
             HttpResponseMessage response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
             string content = await ParseResponse(response);
-            return ParseContent<List<Record>>(content);
+            return RecordHelpers.JsonToRecordList(content)!;
         }
 
         /// <summary>
@@ -112,7 +78,7 @@ namespace Heracles.Lib
             ArgumentNullException.ThrowIfNull(theRecord.Id);
             HttpResponseMessage response = await httpClient.DeleteAsync($"records/{theRecord.Id}");
             string content = await ParseResponse(response);
-            return ParseContent<Record>(content);
+            return RecordHelpers.JsonToRecord(content)!;
         }
 
         /// <summary>
@@ -123,11 +89,11 @@ namespace Heracles.Lib
         /// <returns>A copy of the newly added record.</returns>
         public async Task<Record> Add(Record theRecord)
         {
-            var json = JsonSerializer.Serialize(theRecord, options);
+            var json = RecordHelpers.RecordToJson(theRecord);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await httpClient.PostAsync("records", jsonContent);
             string content = await ParseResponse(response);
-            return ParseContent<Record>(content);
+            return RecordHelpers.JsonToRecord(content)!;
         }
 
         /// <summary>
@@ -140,11 +106,11 @@ namespace Heracles.Lib
         public async Task<Record> Update(Record theRecord)
         {
             ArgumentNullException.ThrowIfNull(theRecord.Id);
-            var json = JsonSerializer.Serialize(theRecord, options);
+            var json = RecordHelpers.RecordToJson(theRecord);
             using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await httpClient.PutAsync($"records/{theRecord.Id}", jsonContent);
             string content = await ParseResponse(response);
-            return ParseContent<Record>(content);
+            return RecordHelpers.JsonToRecord(content)!;
         }
 
         /// <summary>
@@ -159,7 +125,7 @@ namespace Heracles.Lib
             ArgumentNullException.ThrowIfNull(theRecord.Id);
             HttpResponseMessage response = await httpClient.GetAsync($"records/{theRecord.Id}");
             string content = await ParseResponse(response);
-            return ParseContent<Record>(content);
+            return RecordHelpers.JsonToRecord(content)!;
         }
     }
 }

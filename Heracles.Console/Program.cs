@@ -1,7 +1,5 @@
 ﻿using Heracles.Console;
 using Heracles.Lib;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 // Globals
 string? Uri;
@@ -9,11 +7,6 @@ string? Credentials;
 string? Input;
 ProgramMode Mode;
 HydraClient Client;
-JsonSerializerOptions options = new()
-{
-    WriteIndented = true,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-};
 
 // Configure args
 Mode = (args.Length > 0) switch
@@ -60,4 +53,4 @@ List<Record> r = Mode switch
     _ => new List<Record> { } // Should never get here
 };
 
-Console.WriteLine(JsonSerializer.Serialize<List<Record>>(r, options));
+Console.WriteLine(RecordHelpers.RecordListToJson(r));
