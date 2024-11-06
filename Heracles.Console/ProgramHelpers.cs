@@ -33,6 +33,13 @@ partial class Program()
         Environment.Exit(1);
 	}
 
+    /// <summary>
+    /// Deserialises a JSON encoded list of Hydra Records and passes them one
+    /// at a time to the provided function.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="f"></param>
+    /// <returns>The list of Hydra Records resulting from the function calls.</returns>
     public static async Task<List<Record>> LoopJsonRecords(string s, Func<Record, Task<Record>> f)
     {
         List<Record> rs = [];
