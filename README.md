@@ -1,8 +1,12 @@
-# Heracles
+﻿# Heracles
 
 `heracles` allows entries in the University of Oxford Hydra DNS to be queried, added, modified and deleted on the command line.
 
 ***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is either valid input for other commands, or can be used to create it.
+
+# Downloading
+
+Grab a binary for Windows, Mac or Linux at Releases. 👉
 
 # Compiling
 
