@@ -9,7 +9,7 @@ namespace Heracles.Lib
         // for full details of record fields.
 
         [JsonPropertyName("big_endian_labels")]
-        public List<string>? BigEndianLables { get; set; }
+        public List<string>? BigEndianLabels { get; set; }
 
         [JsonPropertyName("bind_rdata")]
         public string? BindRdata { get; set; }
