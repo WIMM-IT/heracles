@@ -2,11 +2,11 @@
 
 `heracles` allows entries in the University of Oxford Hydra DNS to be queried, added, modified and deleted on the command line.
 
-***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is valid input for most other commands (once unique fields like `id` are all stripped out).
+***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is either valid input for other commands, or can be used to create it.
 
 # Compiling
 
-`heracles` is a C# program which can be compilied anywhere the DotNet 8 SDK is available. See https://dotnet.microsoft.com/en-us/download for full details.
+`heracles` can be compilied to a native executable anywhere the DotNet 8 SDK is available. See https://dotnet.microsoft.com/en-us/download for full details.
 
 - Windows: `winget install Microsoft.DotNet.SDK.8`
 - Ubuntu: `apt install dotnet-sdk-8.0`
@@ -14,11 +14,10 @@
 
 ```
 $ cd heracles
-$ cd Heracles.Console
 $ dotnet publish
 ```
 
-This will create a portable executable for the OS and architecture the code was compiled on, in the folder `\bin\Release\net8.0\{os}-{arch}\publish\`. The `.pdb` debugging files can be ignored.
+This will create a native executable for the OS and architecture the code was compiled on, in the folder `Heracles.Console\bin\Release\net8.0\{os}-{arch}\publish\`. The `.pdb` debugging files can be ignored.
 
 # Requirements
 
@@ -27,7 +26,7 @@ You must create an API token which can be used by Heracles, as described at http
 - `HYDRA_URI`: URI for either production or sandpit, as documented at https://wiki.it.ox.ac.uk/networks/HydraAPI, and ending `/ipam/` (including the trailing slash)
 - `HYDRA_TOKEN` : auth token in the format `unit/user:encodedpassword` (including the `:`)
 
-Environment variables were chosen because they can be easily populated by secret managment systems and injected into containerised environments.
+Environment variables were chosen because they can be easily populated by secrets managment systems and can be injected into containerised environments.
 
 # Examples
 
@@ -52,7 +51,27 @@ $ heracles search _acme
 ]
 ```
 
-## Example 2 - Adding new records
+## Example 2 - Getting matching records
+
+Takes a JSON list containing one or more entries to be added, either on STDIN or as the second argument. `content`, `hostname`, `type` and `id` are required fields. Returns a JSON list of the entries. Primarily useful for safely testing command pipes.
+
+```
+$ heracles search _acme-challenge.web | heracles get
+[
+  {
+    "big_endian_labels": [
+      "uk",
+      "ac",
+      "ox",
+      "unit",
+      "web",
+      "_acme-challenge"
+    ],
+    ...
+  }
+]
+```
+## Example 3 - Adding new records
 
 Takes a JSON list containing one or more entries to be added, either on STDIN or as the second argument. `content`, `hostname`, and `type` are required fields. Returns a JSON list of the affected entries.
 
@@ -76,7 +95,7 @@ $ echo '[{ "comment": "Test", "content": "foofoofoofoofoofoofoofoo", "hostname":
 ]
 ```
 
-## Example 3 - Updating a record
+## Example 4 - Updating a record
 
 Takes a JSON list containing one or more entries to be modified, either on STDIN or as the second argument. `id`, `content`, `hostname`, `type` and any properties to modify are required fields. Returns a JSON list of the affected entries.
 
@@ -100,7 +119,7 @@ $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Anoth
 ]
 ```
 
-## Example 4 - Deleting a record
+## Example 5 - Deleting a record
 
 Takes a JSON list containing one or more entries to be deleted, either on STDIN or as the second argument.  `id`, `content`, `hostname` and `type` are required fields. Returns a JSON list of the affected entries.
 
