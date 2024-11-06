@@ -1,44 +1,70 @@
 # Heracles
 
-`heracles` allows entries in the University of Oxford Hydra DNS to be queried, modified and deleted on the command line.
+`heracles` allows entries in the University of Oxford Hydra DNS to be queried, added, modified and deleted on the command line.
 
 ***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is valid input for most other commands (once unique fields like `id` are all stripped out).
 
 # Compiling
 
-`heracles` is a C# program which will run anywhere the DotNet 8 SDK is available. See https://dotnet.microsoft.com/en-us/download for full details.
+`heracles` is a C# program which can be compilied anywhere the DotNet 8 SDK is available. See https://dotnet.microsoft.com/en-us/download for full details.
 
 - Windows: `winget install Microsoft.DotNet.SDK.8`
 - Ubuntu: `apt install dotnet-sdk-8.0`
 - Mac: `brew install dotnet-sdk`
 
+```
+$ cd heracles
+$ cd Heracles.Console
+$ dotnet publish --sc true
+```
+
+This will create a portable executable, with the DotNet runtime pre-bundled, in the folder `\bin\Release\net8.0\{os}-{arch}\publish\`.
+
 # Requirements
 
-You must create an API token which can be used by Heracles, as described at https://wiki.it.ox.ac.uk/networks/HydraTokens. To enable the use of different tokens with different privileges, as well as using Heracles with both production and sandpit Hydra instances, the access credentials and the URI of the API must be stored in two environment variables:
+You must create an API token which can be used by Heracles, as described at https://wiki.it.ox.ac.uk/networks/HydraTokens. To enable the use of different tokens with different privileges, as well as using Heracles with both production and sandpit Hydra instances, the access credentials and the URI of the API must be stored in environment variables:
 
 - `HYDRA_URI`: URI for either production or sandpit, as documented at https://wiki.it.ox.ac.uk/networks/HydraAPI, and ending `/ipam/` (including the trailing slash)
 - `HYDRA_TOKEN` : auth token in the format `unit/user:encodedpassword` (including the `:`)
 
+Environment variables were chosen because they can be easily populated by secret managment systems and injected into containerised environments.
+
 # Examples
 
-## Example 1 - Searching for records matching a hostname string (no hits)
+## Example 1 - Searching for records matching a hostname string
+
+Returns a list of JSON encoded records (if any).
 
 ```
 $ heracles search _acme
-[]
-```
-
-## Example 2 - Adding a new record
-
-```
-$ echo '[{ "comment": "Test", "content": "foofoofoofoofoofoofoofoo", "hostname": "_acme-challenge.foo.imm.ox.ac.uk.", "type": "TXT" }]' | heracles add
 [
   {
     "big_endian_labels": [
       "uk",
       "ac",
       "ox",
-      "imm",
+      "unit",
+      "web",
+      "_acme-challenge"
+    ],
+    ...
+  }
+]
+```
+
+## Example 2 - Adding new records
+
+Takes a JSON list containing one or more entries to be added, either on STDIN or as the second argument. `content`, `hostname`, and `type` are required fields. Returns a JSON list of the affected entries.
+
+```
+$ echo '[{ "comment": "Test", "content": "foofoofoofoofoofoofoofoo", "hostname": "_acme-challenge.foo.unit.ox.ac.uk.", "type": "TXT" }]' | heracles add
+[
+  {
+    "big_endian_labels": [
+      "uk",
+      "ac",
+      "ox",
+      "unit",
       "foo",
       "_acme-challenge"
     ],
@@ -52,6 +78,8 @@ $ echo '[{ "comment": "Test", "content": "foofoofoofoofoofoofoofoo", "hostname":
 
 ## Example 3 - Updating a record
 
+Takes a JSON list containing one or more entries to be modified, either on STDIN or as the second argument. `id`, `content`, `hostname`, `type` and any properties to modify are required fields. Returns a JSON list of the affected entries.
+
 ```
 $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Another Test"/' | heracles update
 [
@@ -60,7 +88,7 @@ $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Anoth
       "uk",
       "ac",
       "ox",
-      "imm",
+      "unit",
       "foo",
       "_acme-challenge"
     ],
@@ -73,6 +101,9 @@ $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Anoth
 ```
 
 ## Example 4 - Deleting a record
+
+Takes a JSON list containing one or more entries to be deleted, either on STDIN or as the second argument.  `id`, `content`, `hostname` and `type` are required fields. Returns a JSON list of the affected entries.
+
 ```
 $ heracles search _acme-challenge.foo | heracles delete
 [
@@ -81,7 +112,7 @@ $ heracles search _acme-challenge.foo | heracles delete
       "uk",
       "ac",
       "ox",
-      "imm",
+      "unit",
       "foo",
       "_acme-challenge"
     ],
@@ -91,6 +122,7 @@ $ heracles search _acme-challenge.foo | heracles delete
     ...
   }
 ]
+
 $ heracles search _acme-challenge.foo
 []
 ```

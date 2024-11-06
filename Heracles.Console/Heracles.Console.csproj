@@ -5,10 +5,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>heracles</AssemblyName>
+	<PublishSingleFile>true</PublishSingleFile>
+	<AssemblyName>heracles</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\Heracles.Lib\Heracles.Lib.csproj" />
   </ItemGroup>
 
