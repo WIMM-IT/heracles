@@ -12,12 +12,13 @@
 #
 # Usage:
 #
-# certbot certonly --manual --preferred-challenges=dns --manual-auth-hook /path/to/CertBot.sh
+# certbot certonly --manual --preferred-challenges=dns \
+#                  --manual-auth-hook /path/to/CertBotAuth.sh \
+#                  --manual-cleanup-hook /path/to/CertBotCleanup.sh
 #
 # To Do:
 #
 # - Handle multi-domain certificate requests
-# - Create a script to remove the added DNS entry
 
 CREATE_DOMAIN="_acme-challenge.$CERTBOT_DOMAIN"
 HERACLES_STDIN="[{ \"comment\": \"WinAcme\", \"content\": \"$CERTBOT_VALIDATION\", \"hostname\": \"$CREATE_DOMAIN.\", \"type\": \"TXT\" }]"
