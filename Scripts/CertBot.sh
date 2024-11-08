@@ -57,6 +57,7 @@ DoCreate () {
 
 CheckBin dig
 CheckBin nslookup
+CheckBin heracles
 
 nslookup $CERTBOT_DOMAIN &> /dev/null || Panic "$CERTBOT_DOMAIN is not a valid DNS entry"
 DoCreate
