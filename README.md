@@ -4,22 +4,11 @@
 
 ***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is either valid input for other commands, or can be used to create it.
 
-# Downloading
+Scripts are also provided for using `heracles` to automate certificate requesting using WinAcme and CertBot.
 
-Grab a binary for Windows, Mac or Linux at Releases. 👉
+# Getting Heracles
 
-# Compiling
-
-`heracles` can be compilied to a native executable anywhere the DotNet 8 SDK is available.
-
-1. Install the DotNet 8 SDK. See https://dotnet.microsoft.com/en-us/download for full details.
-   - Windows: `winget install Microsoft.DotNet.SDK.8`
-   - Ubuntu: `apt install dotnet-sdk-8.0`
-   - Mac: `brew install dotnet-sdk`
-2. Install the necessary compiler tools for your platform. See https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/#prerequisites for full details.
-3. `dotnet publish`
-
-This will create a native executable for the OS and architecture the code was compiled on, in the folder `Heracles.Console\bin\Release\net8.0\{os}-{arch}\publish\`. The `.pdb` debugging files can be ignored.
+See below for details on compiling your copy, or grab a binary for Windows, Mac or Linux at Releases. 👉
 
 # Requirements
 
@@ -29,6 +18,10 @@ You must create an API token which can be used by Heracles, as described at http
 - `HYDRA_TOKEN` : auth token in the format `unit/user:encodedpassword` (including the `:`)
 
 Environment variables were chosen because they can be easily populated by secrets managment systems and can be injected into containerised environments.
+
+# Automated Certificate requests
+
+`heracles` can be used to automate the process of requesting server certificates using DNS-01 authentication. Plugin scripts are provided for WinAcme and CertBot in the `Scripts` folder. See the comments sections at the top of the files for guidance on usage.
 
 # Examples
 
@@ -147,3 +140,16 @@ $ heracles search _acme-challenge.foo | heracles delete
 $ heracles search _acme-challenge.foo
 []
 ```
+
+# Compiling
+
+`heracles` can be compilied to a native executable anywhere the DotNet 8 SDK is available.
+
+1. Install the DotNet 8 SDK. See https://dotnet.microsoft.com/en-us/download for full details.
+   - Windows: `winget install Microsoft.DotNet.SDK.8`
+   - Ubuntu: `apt install dotnet-sdk-8.0`
+   - Mac: `brew install dotnet-sdk`
+2. Install the necessary compiler tools for your platform. See https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/#prerequisites for full details.
+3. `dotnet publish`
+
+This will create a native executable for the OS and architecture the code was compiled on, in the folder `Heracles.Console\bin\Release\net8.0\{os}-{arch}\publish\`. The `.pdb` debugging files can be ignored.
