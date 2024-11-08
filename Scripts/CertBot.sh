@@ -13,6 +13,11 @@
 # Usage:
 #
 # certbot certonly --manual --preferred-challenges=dns --manual-auth-hook /path/to/CertBot.sh
+#
+# To Do:
+#
+# - Handle multi-domain certificate requests
+# - Create a script to remove the added DNS entry
 
 CREATE_DOMAIN="_acme-challenge.$CERTBOT_DOMAIN"
 HERACLES_STDIN="[{ \"comment\": \"WinAcme\", \"content\": \"$CERTBOT_VALIDATION\", \"hostname\": \"$CREATE_DOMAIN.\", \"type\": \"TXT\" }]"
@@ -50,7 +55,7 @@ DoCheck () {
 }
 
 DoCreate () {
-	CheckAcmeTxtRecordExists && (echo $HERACLES_STDIN | heracles update || Panic "Hydra DNS update failed")
+	CheckAcmeTxtRecordExists && Panic "Stale ACME record for host found in DNS"
 	CheckAcmeTxtRecordExists || (echo $HERACLES_STDIN | heracles add    || Panic "Hydra DNS update failed")
 	DoCheck
 }
