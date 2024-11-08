@@ -2,7 +2,7 @@
 
 `heracles` allows entries in the University of Oxford Hydra DNS to be queried, added, modified and deleted on the command line.
 
-***As is common with UNIX command line tools, `heracles` does not ask for confirmation before performing bulk actions. `heracles search "." | heracles delete` will happily clear your records.*** If you do make a terrible mistake, note that the output text of most commands is either valid input for other commands, or can be used to create it.
+By default, `heracles` will not update or delete more than one record at a time, and will terminate if you attempt to do so. If you wish to override this behaviour, set the environment variable `HYDRA_UNSAFE` to any non-null value. Other bulk operations are supported.
 
 Scripts are also provided for using `heracles` to automate certificate requesting using WinAcme and CertBot.
 

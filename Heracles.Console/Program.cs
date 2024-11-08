@@ -48,8 +48,8 @@ List<Record> r = Mode switch
     ProgramMode.Search => await Client.Search(Input!),
     ProgramMode.Get    => await LoopJsonRecords(Input!, Client.Get),
     ProgramMode.Add    => await LoopJsonRecords(Input!, Client.Add),
-    ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update),
-    ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete),
+    ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update, true),
+    ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete, true),
     _ => new List<Record> { } // Should never get here
 };
 
