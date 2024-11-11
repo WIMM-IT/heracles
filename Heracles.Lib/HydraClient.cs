@@ -35,13 +35,7 @@ namespace Heracles.Lib
             {
                 return content;
             }
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("CRIT: Unexpected response from server");
-            Console.ResetColor();
-            Console.WriteLine(response.StatusCode);
-            Console.WriteLine(content);
-            throw new HttpRequestException();
+            throw new HttpRequestException($"Unexpected server response: {response.StatusCode}\n{content}");
         }
 
         /// <summary>
@@ -59,7 +53,7 @@ namespace Heracles.Lib
         {
             if (limit < 1 || limit > 500000)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("limit", "Must be between 1 and 500000");
             }
             HttpResponseMessage response = await httpClient.GetAsync($"records?q=in_hostname%3A{substring}&limit={limit}");
             string content = await ParseResponse(response);
