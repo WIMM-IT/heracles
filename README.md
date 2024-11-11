@@ -92,7 +92,7 @@ $ echo '[{ "comment": "Test", "content": "foofoofoofoofoofoofoofoo", "hostname":
 
 ## Example 4 - Updating a record
 
-Takes a JSON list containing one or more entries to be modified, either on STDIN or as the second argument. `id`, `content`, `hostname`, `type` and any properties to modify are required fields. Returns a JSON list of the affected entries.
+Takes a JSON list containing one or more entries to be modified, either on STDIN or as the second argument. If you are updating more than one record, note that you will need to set the evironment variable `HYDRA_UNSAFE`. `id`, `content`, `hostname`, `type` and any properties to modify are required fields. Returns a JSON list of the affected entries.
 
 ```
 $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Another Test"/' | heracles update
@@ -116,7 +116,7 @@ $ heracles search _acme-challenge.foo | sed 's/comment": "Test"/comment": "Anoth
 
 ## Example 5 - Deleting a record
 
-Takes a JSON list containing one or more entries to be deleted, either on STDIN or as the second argument.  `id`, `content`, `hostname` and `type` are required fields. Returns a JSON list of the affected entries.
+Takes a JSON list containing one or more entries to be deleted, either on STDIN or as the second argument. If you are deleting more than one record, note that you will need to set the evironment variable `HYDRA_UNSAFE`.  `id`, `content`, `hostname` and `type` are required fields. Returns a JSON list of the affected entries.
 
 ```
 $ heracles search _acme-challenge.foo | heracles delete
