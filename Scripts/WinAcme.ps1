@@ -2,11 +2,19 @@
 # Automated certificate requests using WinAcme #
 ################################################
 #
-# 1. Copy heracles.exe to C:\WINDOWS\SysWOW64\
+# 1. Copy heracles.exe to BOTH C:\WINDOWS\System32\ AND C:\WINDOWS\SysWOW64\
 #
-# 2. Unblock-File WinAcme.ps1
+# 2. Download Win-Acme from https://www.win-acme.com/ and unpack it
 #
-# 3. wacs.exe --validationmode dns-01 --validation script --dnscreatescript \path\to\WinAcme.ps1 --dnsdeletescript \path\to\WinAcme.ps1
+# 3. Copy WinAcme.ps1 into the win-acme folder
+#
+# 4. Open a PowerShell with Adminitrative privileges
+#
+# 5. "cd" into the win-acme folder
+#
+# 6. Unblock-File WinAcme.ps1
+#
+# 7. .\wacs.exe --validationmode dns-01 --validation script --dnscreatescript .\WinAcme.ps1 --dnsdeletescript .\WinAcme.ps1
 
 param([string]$Mode=$(throw "Mode not specified"),
       [string]$HostRecord=$(throw "HostRecord not specified"),
