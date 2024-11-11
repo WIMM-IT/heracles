@@ -2,8 +2,8 @@
 using Heracles.Lib;
 
 // Globals
-string? HYDRA_URI;
-string? HYDRA_TOKEN;
+string? Uri;
+string? Token;
 string? Input;
 ProgramMode Mode;
 HydraClient Client;
@@ -38,11 +38,11 @@ if (Input is null || Mode == ProgramMode.Unknown)
 try
 {
     // Init
-    HYDRA_URI = Environment.GetEnvironmentVariable("HYDRA_URI");
-    HYDRA_TOKEN = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
-    ArgumentNullException.ThrowIfNull(HYDRA_URI);
-    ArgumentNullException.ThrowIfNull(HYDRA_TOKEN);
-    Client = new(HYDRA_URI, HYDRA_TOKEN);
+    Uri = Environment.GetEnvironmentVariable("Uri");
+    Token = Environment.GetEnvironmentVariable("Token");
+    ArgumentNullException.ThrowIfNull(Uri, "HYDRA_URI");
+    ArgumentNullException.ThrowIfNull(Token, "HYDRA_TOKEN");
+    Client = new(Uri, Token);
 
     // Run
     List<Record> r = Mode switch
