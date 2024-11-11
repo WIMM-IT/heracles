@@ -2,8 +2,8 @@
 using Heracles.Lib;
 
 // Globals
-string? Uri;
-string? Credentials;
+string? HYDRA_URI;
+string? HYDRA_TOKEN;
 string? Input;
 ProgramMode Mode;
 HydraClient Client;
@@ -35,22 +35,30 @@ if (Input is null || Mode == ProgramMode.Unknown)
     Program.Usage();
 }
 
-// Init
-Uri = Environment.GetEnvironmentVariable("HYDRA_URI");
-Credentials = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
-ArgumentNullException.ThrowIfNull(Uri);
-ArgumentNullException.ThrowIfNull(Credentials);
-Client = new(Uri, Credentials);
-
-// Run
-List<Record> r = Mode switch
+try
 {
-    ProgramMode.Search => await Client.Search(Input!),
-    ProgramMode.Get    => await LoopJsonRecords(Input!, Client.Get),
-    ProgramMode.Add    => await LoopJsonRecords(Input!, Client.Add),
-    ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update, true),
-    ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete, true),
-    _ => new List<Record> { } // Should never get here
-};
+    // Init
+    HYDRA_URI = Environment.GetEnvironmentVariable("HYDRA_URI");
+    HYDRA_TOKEN = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
+    ArgumentNullException.ThrowIfNull(HYDRA_URI);
+    ArgumentNullException.ThrowIfNull(HYDRA_TOKEN);
+    Client = new(HYDRA_URI, HYDRA_TOKEN);
 
-Console.WriteLine(RecordHelpers.RecordListToJson(r));
+    // Run
+    List<Record> r = Mode switch
+    {
+        ProgramMode.Search => await Client.Search(Input!),
+        ProgramMode.Get => await LoopJsonRecords(Input!, Client.Get),
+        ProgramMode.Add => await LoopJsonRecords(Input!, Client.Add),
+        ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update, true),
+        ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete, true),
+        _ => new List<Record> { } // Should never get here
+    };
+
+    Console.WriteLine(RecordHelpers.RecordListToJson(r));
+
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"CRIT: {ex.Message}");
+}
