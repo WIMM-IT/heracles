@@ -15,6 +15,12 @@
 # 6. Unblock-File WinAcme.ps1
 #
 # 7. .\wacs.exe --validationmode dns-01 --validation script --dnscreatescript .\WinAcme.ps1 --dnsdeletescript .\WinAcme.ps1
+#
+# If you don't want to set the environment variables permanently, note that you
+# can set temporory environment variables in PowerShell like so:
+#
+# [System.Environment]::SetEnvironmentVariable('HYDRA_URI', 'https://the/production/hydra/uri')
+# [System.Environment]::SetEnvironmentVariable('HYDRA_TOKEN', 'unit/user:somevalidtoken')
 
 param([string]$Mode=$(throw "Mode not specified"),
       [string]$HostRecord=$(throw "HostRecord not specified"),
