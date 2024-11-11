@@ -1,4 +1,5 @@
 ## Manually added ignore files
+*.dbg
 *.http
 **/.DS_Store
 
