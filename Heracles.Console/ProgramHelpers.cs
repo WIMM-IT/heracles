@@ -62,9 +62,10 @@ namespace Heracles.Console
                     outRecords.Add(await func(r));
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                System.Console.WriteLine($"{ex.Message}\n...aborting");
+                System.Console.WriteLine(RecordHelpers.RecordListToJson(outRecords));
+                throw;
             }
 
             return outRecords;
