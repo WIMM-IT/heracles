@@ -14,6 +14,7 @@ namespace Heracles.UnitTests
         [Fact]
         public async void DeleteWithInvalidCredentialsThrowsHttpRequestException()
         {
+            //Act
             Task result() => Fixture.InvalidHydraClient.Delete(Fixture.DummyRecord);
 
             //Assert
