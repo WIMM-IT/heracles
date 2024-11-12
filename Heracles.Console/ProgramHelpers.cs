@@ -1,10 +1,12 @@
 ﻿using Heracles.Lib;
 
-partial class Program()
+namespace Heracles.Console
 {
-	public static void Usage()
-	{
-        string usage = """
+    public static class Helpers
+    {
+        public static void Usage()
+        {
+            string usage = """
             USAGE: heracles search string
                             get    [json]
                             add    [json]
@@ -28,43 +30,45 @@ partial class Program()
             
             $ heracles search _acme-challenge.foo | heracles delete
             """;
-        Console.WriteLine(usage);
+            System.Console.WriteLine(usage);
 
-        Environment.Exit(1);
-	}
-
-    /// <summary>
-    /// Deserialises a JSON encoded list of Hydra Records and passes them one
-    /// at a time to the provided function. If "safeMode" is true, the program
-    /// will terminate when given more than one Record. To override the protection,
-    /// set the environment variable "HYDRA_UNSAFE" to any non-null value.
-    /// </summary>
-    /// <param name="json"></param>
-    /// <param name="func"></param>
-    /// <param name="safeMode"></param>
-    /// <returns>The list of Hydra Records resulting from the function calls.</returns>
-    public static async Task<List<Record>> LoopJsonRecords(string json, Func<Record, Task<Record>> func, bool safeMode = false)
-    {
-        List<Record>? inRecords = RecordHelpers.JsonToRecordList(json);
-        string? safeModeOverride = Environment.GetEnvironmentVariable("HYDRA_UNSAFE");
-        if ((inRecords?.Count > 1) && safeMode && safeModeOverride is null)
-        {
-            throw new Exception("Attempted to process multiple Records and HYDRA_UNSAFE is not set");
+            Environment.Exit(1);
         }
-        
-        List<Record> outRecords = [];
-        try
+
+        /// <summary>
+        /// Deserialises a JSON encoded list of Hydra Records and passes them one
+        /// at a time to the provided function. If "safeMode" is true, the program
+        /// will terminate when given more than one Record. To override the protection,
+        /// set the environment variable "HYDRA_UNSAFE" to any non-null value.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="func"></param>
+        /// <param name="safeMode"></param>
+        /// <returns>The list of Hydra Records resulting from the function calls.</returns>
+        public static async Task<List<Record>> LoopJsonRecords(string json, Func<Record, Task<Record>> func, bool safeMode = false)
         {
-            foreach (Record r in inRecords!)
+            List<Record>? inRecords = RecordHelpers.JsonToRecordList(json);
+            string? safeModeOverride = Environment.GetEnvironmentVariable("HYDRA_UNSAFE");
+            if ((inRecords?.Count > 1) && safeMode && safeModeOverride is null)
             {
-                outRecords.Add(await func(r));
+                throw new Exception("Attempted to process multiple Records and HYDRA_UNSAFE is not set");
             }
+
+            List<Record> outRecords = [];
+            try
+            {
+                foreach (Record r in inRecords!)
+                {
+                    outRecords.Add(await func(r));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine($"{ex.Message}\n...aborting");
+            }
+
+            return outRecords;
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"{ex.Message}\n...aborting");
-        }
-        
-        return outRecords;
     }
+
 }

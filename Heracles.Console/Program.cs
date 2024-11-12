@@ -32,14 +32,14 @@ Input = (System.Console.IsInputRedirected, args.Length == 2) switch
 
 if (Input is null || Mode == ProgramMode.Unknown)
 {
-    Program.Usage();
+    Helpers.Usage();
 }
 
 try
 {
     // Init
-    Uri = Environment.GetEnvironmentVariable("Uri");
-    Token = Environment.GetEnvironmentVariable("Token");
+    Uri = Environment.GetEnvironmentVariable("HYDRA_URI");
+    Token = Environment.GetEnvironmentVariable("HYDRA_TOKEN");
     ArgumentNullException.ThrowIfNull(Uri, "HYDRA_URI");
     ArgumentNullException.ThrowIfNull(Token, "HYDRA_TOKEN");
     Client = new(Uri, Token);
@@ -48,10 +48,10 @@ try
     List<Record> r = Mode switch
     {
         ProgramMode.Search => await Client.Search(Input!),
-        ProgramMode.Get => await LoopJsonRecords(Input!, Client.Get),
-        ProgramMode.Add => await LoopJsonRecords(Input!, Client.Add),
-        ProgramMode.Update => await LoopJsonRecords(Input!, Client.Update, true),
-        ProgramMode.Delete => await LoopJsonRecords(Input!, Client.Delete, true),
+        ProgramMode.Get => await Helpers.LoopJsonRecords(Input!, Client.Get),
+        ProgramMode.Add => await Helpers.LoopJsonRecords(Input!, Client.Add),
+        ProgramMode.Update => await Helpers.LoopJsonRecords(Input!, Client.Update, true),
+        ProgramMode.Delete => await Helpers.LoopJsonRecords(Input!, Client.Delete, true),
         _ => new List<Record> { } // Should never get here
     };
 
