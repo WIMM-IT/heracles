@@ -51,7 +51,7 @@ namespace Heracles.Console
             string? safeModeOverride = Environment.GetEnvironmentVariable("HYDRA_UNSAFE");
             if ((inRecords?.Count > 1) && safeMode && safeModeOverride is null)
             {
-                throw new Exception("Attempted to process multiple Records and HYDRA_UNSAFE is not set");
+                throw new InvalidDataException("Attempted to process multiple Records and HYDRA_UNSAFE is not set");
             }
 
             List<Record> outRecords = [];
