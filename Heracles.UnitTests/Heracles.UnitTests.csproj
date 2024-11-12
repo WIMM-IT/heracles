@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Heracles.Console\Heracles.Console.csproj" />
     <ProjectReference Include="..\Heracles.Lib\Heracles.Lib.csproj" />
   </ItemGroup>
 

@@ -22,6 +22,11 @@ namespace Heracles.UnitTests
             Content = "test",
             Type = "TXT"
         };
+        public List<Heracles.Lib.Record> DummyRecordList = 
+        [
+            new () {Hostname = "foo", Content = "foo", Type = "TXT", Id = Guid.NewGuid()},
+            new () {Hostname = "bar", Content = "bar", Type = "TXT", Id = Guid.NewGuid()},
+        ];
 
         public HeraclesFixture()
         {
