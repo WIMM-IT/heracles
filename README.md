@@ -8,7 +8,7 @@ Scripts are also provided for using `heracles` to automate certificate requestin
 
 # Getting Heracles
 
-See below for details on compiling your copy, or grab a binary for Windows, Mac or Linux at Releases. 👉
+See below for details on compiling your copy, get the latest development version from `Heracles.Console/Binaries`, or grab a release binary from Releases. 👉
 
 # Requirements
 
