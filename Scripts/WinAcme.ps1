@@ -4,6 +4,13 @@
 #
 # 1. Copy heracles.exe to BOTH C:\WINDOWS\System32\ AND C:\WINDOWS\SysWOW64\
 #
+#    Make sure that the environment variables are set and it's working properly. If
+#    you don't want to set the environment variables permanently, note that you can
+#    set temporary environment variables in PowerShell like so:
+#
+#    [System.Environment]::SetEnvironmentVariable('HYDRA_URI', 'https://the/production/hydra/uri')
+#    [System.Environment]::SetEnvironmentVariable('HYDRA_TOKEN', 'unit/user:somevalidtoken')
+#
 # 2. Download Win-Acme from https://www.win-acme.com/ and unpack it
 #
 # 3. Copy WinAcme.ps1 into the win-acme folder
@@ -15,12 +22,6 @@
 # 6. Unblock-File WinAcme.ps1
 #
 # 7. .\wacs.exe --validationmode dns-01 --validation script --dnscreatescript \full\path\to\WinAcme.ps1 --dnsdeletescript \full\path\to\WinAcme.ps1
-#
-# If you don't want to set the environment variables permanently, note that you
-# can set temporory environment variables in PowerShell like so:
-#
-# [System.Environment]::SetEnvironmentVariable('HYDRA_URI', 'https://the/production/hydra/uri')
-# [System.Environment]::SetEnvironmentVariable('HYDRA_TOKEN', 'unit/user:somevalidtoken')
 
 param([string]$Mode=$(throw "Mode not specified"),
       [string]$HostRecord=$(throw "HostRecord not specified"),
