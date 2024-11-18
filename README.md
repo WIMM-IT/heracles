@@ -25,7 +25,7 @@ Environment variables were chosen because they can be easily populated by secret
 
 # Examples
 
-## Example 1 - Searching for records matching a hostname string
+## Example 1 - Searching for records matching a string
 
 Returns a list of JSON encoded records (if any).
 
