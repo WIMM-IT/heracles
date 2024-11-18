@@ -27,7 +27,7 @@ Environment variables were chosen because they can be easily populated by secret
 
 ## Example 1 - Searching for records matching a string
 
-Returns a list of JSON encoded records (if any).
+Returns a list of JSON encoded records (if any). Searches against any keyless data field (see https://www.networks.it.ox.ac.uk/university/ipam/help/searching for details), and includes partial matches. Examples might include `192.168.10.`, `_acme-challenge`, `web.foo.ox.ac.uk` or `CNAME`.
 
 ```
 $ heracles search _acme
