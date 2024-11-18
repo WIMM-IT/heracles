@@ -22,6 +22,10 @@
 # 6. Unblock-File WinAcme.ps1
 #
 # 7. .\wacs.exe --validationmode dns-01 --validation script --dnscreatescript \full\path\to\WinAcme.ps1 --dnsdeletescript \full\path\to\WinAcme.ps1
+#
+# To request multiple DNS names on the same certificate, enter them as a comma
+# searated list, and when asked "Enable parallel execution?", be sure to choose
+# the option "Allow multiple instances of the script to run at the same time".
 
 param([string]$Mode=$(throw "Mode not specified"),
       [string]$HostRecord=$(throw "HostRecord not specified"),
