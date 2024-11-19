@@ -21,7 +21,7 @@ Environment variables were chosen because they can be easily populated by secret
 
 # Automated Certificate requests
 
-`heracles` can be used to automate the process of requesting server certificates using DNS-01 authentication. Plugin scripts are provided for WinAcme and CertBot in the `Scripts` folder. See the comments sections at the top of the files for guidance on usage.
+`heracles` can be used to automate the process of requesting server certificates using DNS-01 authentication. Plugin scripts are provided for WinAcme and CertBot under Releases, with the latest development versions in the `Scripts` folder. See the comments sections at the top of the files for guidance on usage.
 
 # Examples
 
