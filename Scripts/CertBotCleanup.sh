@@ -12,7 +12,7 @@ CheckBin () {
 }
 
 CheckAcmeTxtRecordExists () {
-	RES=$(dig +noall 5+answer TXT "$CREATE_DOMAIN")
+	RES=$(dig +noall +answer TXT "$CREATE_DOMAIN")
 	if [[ -z $RES ]]; then
 		return 1
 	else
