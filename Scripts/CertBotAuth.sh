@@ -12,6 +12,8 @@
 #
 # Usage:
 #
+# Ensure that /etc/heracles.conf has been created
+#
 # certbot certonly --manual --preferred-challenges=dns \
 #                  --manual-auth-hook /path/to/CertBotAuth.sh \
 #                  --manual-cleanup-hook /path/to/CertBotCleanup.sh
