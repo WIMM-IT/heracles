@@ -23,10 +23,10 @@ CheckAcmeTxtRecordExists () {
 CheckBin dig
 CheckBin nslookup
 CheckBin heracles
-if [ -z "$(HYDRA_URI)" ]; then
+if [ -z "$HYDRA_URI" ]; then
   Panic "HYDRA_URI is not set"
 fi
-if [ -z "$(HYDRA_TOKEN)" ]; then
+if [ -z "$HYDRA_TOKEN" ]; then
   Panic "HYDRA_TOKEN is not set"
 fi
 
