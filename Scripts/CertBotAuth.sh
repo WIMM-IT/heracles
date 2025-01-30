@@ -24,16 +24,16 @@ CREATE_DOMAIN="_acme-challenge.$CERTBOT_DOMAIN"
 HERACLES_STDIN="[{ \"comment\": \"WinAcme\", \"content\": \"$CERTBOT_VALIDATION\", \"hostname\": \"$CREATE_DOMAIN.\", \"type\": \"TXT\" }]"
 
 Panic () {
-	echo $1
+	echo "$1"
 	exit 1
 }
 
 CheckBin () {
-	which $1 &>/dev/null || Panic "Cannot find executable $1"
+	which "$1" &>/dev/null || Panic "Cannot find executable $1"
 }
 
 CheckAcmeTxtRecordExists () {
-	RES=`dig +noall +answer TXT $CREATE_DOMAIN`
+	RES=$(dig +noall +answer TXT "$CREATE_DOMAIN")
 	if [[ -z $RES ]]; then
 		return 1
 	else
@@ -42,14 +42,14 @@ CheckAcmeTxtRecordExists () {
 }
 
 GetAcmeTxtRecordContents () {
-	dig +noall +answer TXT $CREATE_DOMAIN | cut -d '"' -f 2
+	dig +noall +answer TXT "$CREATE_DOMAIN" | cut -d '"' -f 2
 }
 
 DoCheck () {
 	sleep 60
 	CheckAcmeTxtRecordExists || (echo "Record not yet in DNS" && DoCheck)
 	CURRENT=$(GetAcmeTxtRecordContents)
-	if [ $CURRENT != $CERTBOT_VALIDATION ]; then
+	if [ "$CURRENT" != "$CERTBOT_VALIDATION" ]; then
 		echo "$CURRENT != $CERTBOT_VALIDATION"
 		DoCheck
 	fi
@@ -57,7 +57,7 @@ DoCheck () {
 
 DoCreate () {
 	CheckAcmeTxtRecordExists && Panic "Stale ACME record for host found in DNS"
-	CheckAcmeTxtRecordExists || (echo $HERACLES_STDIN | heracles add    || Panic "Hydra DNS update failed")
+	CheckAcmeTxtRecordExists || (echo "$HERACLES_STDIN" | heracles add    || Panic "Hydra DNS update failed")
 	DoCheck
 }
 
@@ -73,5 +73,5 @@ if [ -z "$HYDRA_TOKEN" ]; then
   Panic "HYDRA_TOKEN is not set"
 fi
 
-nslookup $CERTBOT_DOMAIN &> /dev/null || Panic "$CERTBOT_DOMAIN is not a valid DNS entry"
+nslookup "$CERTBOT_DOMAIN" &> /dev/null || Panic "$CERTBOT_DOMAIN is not a valid DNS entry"
 DoCreate
