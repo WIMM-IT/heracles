@@ -23,6 +23,12 @@ CheckAcmeTxtRecordExists () {
 CheckBin dig
 CheckBin nslookup
 CheckBin heracles
+if [ -z "$(HYDRA_URI)" ]; then
+  Panic "HYDRA_URI is not set"
+fi
+if [ -z "$(HYDRA_TOKEN)" ]; then
+  Panic "HYDRA_TOKEN is not set"
+fi
 
 nslookup $CERTBOT_DOMAIN &> /dev/null || Panic "$CERTBOT_DOMAIN is not a valid DNS entry"
 CheckAcmeTxtRecordExists || Panic "$CREATE_DOMAIN is not a valid DNS entry"
