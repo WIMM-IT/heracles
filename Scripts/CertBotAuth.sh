@@ -64,6 +64,8 @@ DoCreate () {
 CheckBin dig
 CheckBin nslookup
 CheckBin heracles
+
+source /etc/heracles.conf || Panic "Cannot open /etc/heracles.conf"
 if [ -z "$HYDRA_URI" ]; then
   Panic "HYDRA_URI is not set"
 fi
