@@ -61,6 +61,7 @@ DoCreate () {
 	CheckAcmeTxtRecordExists && Panic "Stale ACME record for host found in DNS"
 	CheckAcmeTxtRecordExists || (echo "$HERACLES_STDIN" | heracles add    || Panic "Hydra DNS update failed")
 	DoCheck
+	sleep 60
 }
 
 CheckBin dig

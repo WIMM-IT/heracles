@@ -91,6 +91,7 @@ Function Do-Create
     Get-Content "hydra_add.txt " | & "heracles.exe" "add"
     Check-Panic -Status $? -Message "Hydra DNS change failed"
     Do-Check
+    Start-Sleep -Seconds 60
 }
 
 Function Do-Delete
