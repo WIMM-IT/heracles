@@ -22,6 +22,8 @@
 #
 # - Handle multi-domain certificate requests
 
+RESOLVERS=("1.1.1.1" "8.8.8.8" "9.9.9.9" "208.67.222.222")
+
 CREATE_DOMAIN="_acme-challenge.$CERTBOT_DOMAIN"
 HERACLES_STDIN="[{ \"comment\": \"WinAcme\", \"content\": \"$CERTBOT_VALIDATION\", \"hostname\": \"$CREATE_DOMAIN.\", \"type\": \"TXT\" }]"
 
@@ -43,13 +45,36 @@ CheckAcmeTxtRecordExists () {
 	fi
 }
 
+CheckAcmeTxtRecordPropagated () {
+	local resolver_up=0
+	for ((idx=${#RESOLVERS[@]}-1; idx>=0; idx--)); do
+		resolver="${RESOLVERS[$idx]}"
+		if ! dig +tries=1 +time=2 @"${resolver}" . NS >/dev/null 2>&1; then
+			continue
+		fi
+		resolver_up=1
+        result=$(dig +short TXT "${CREATE_DOMAIN}" @"${resolver}" | tr -d '"')
+		if [[ "$result" != *"$CERTBOT_VALIDATION"* ]]; then
+            return 1  # fail
+        else
+            # Don't need to ping this resolver again.
+			unset 'RESOLVERS[idx]'
+        fi
+    done
+	if [[ $resolver_up -eq 0 ]]; then
+        # No resolvers reachable
+		return 1
+	fi
+	return 0  # success
+}
+
 GetAcmeTxtRecordContents () {
 	dig +noall +answer TXT "$CREATE_DOMAIN" | cut -d '"' -f 2
 }
 
 DoCheck () {
 	sleep 60
-	CheckAcmeTxtRecordExists || (echo "Record not yet in DNS" && DoCheck)
+	CheckAcmeTxtRecordPropagated || (echo "Record not yet in DNS" && DoCheck)
 	CURRENT=$(GetAcmeTxtRecordContents)
 	if [ "$CURRENT" != "$CERTBOT_VALIDATION" ]; then
 		echo "$CURRENT != $CERTBOT_VALIDATION"
@@ -58,8 +83,8 @@ DoCheck () {
 }
 
 DoCreate () {
-	CheckAcmeTxtRecordExists && Panic "Stale ACME record for host found in DNS"
-	CheckAcmeTxtRecordExists || (echo "$HERACLES_STDIN" | heracles add    || Panic "Hydra DNS update failed")
+	CheckAcmeTxtRecordPropagated && Panic "Stale ACME record for host found in DNS"
+	CheckAcmeTxtRecordPropagated || (echo "$HERACLES_STDIN" | heracles add    || Panic "Hydra DNS update failed")
 	DoCheck
 	sleep 60
 }
